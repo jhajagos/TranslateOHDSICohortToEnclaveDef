@@ -245,8 +245,8 @@ FROM
 WHERE results.ordinal = 1
 ;
 
-/* Referenced Tables: ['bxi1x9apstrategy_ends', 'included_events'] */
-CREATE TABLE bxi1x9apstrategy_ends
+/* Referenced Tables: ['strategy_ends', 'included_events'] */
+CREATE TABLE strategy_ends
 AS
 SELECT
 event_id, person_id,
@@ -254,7 +254,7 @@ event_id, person_id,
 FROM
 included_events;
 
-/* Referenced Tables: ['cohort_rows', 'included_events', 'bxi1x9apstrategy_ends'] */
+/* Referenced Tables: ['cohort_rows', 'included_events', 'strategy_ends'] */
 CREATE TABLE cohort_rows
 AS
 SELECT
@@ -268,7 +268,7 @@ FROM
  JOIN ( -- cohort_ends
 -- cohort exit dates
 -- end date strategy
-SELECT event_id, person_id, end_date FROM bxi1x9apstrategy_ends
+SELECT event_id, person_id, end_date FROM strategy_ends
  ) ce ON i.event_id = ce.event_id AND i.person_id = ce.person_id AND ce.end_date >= i.start_date
  ) f
  WHERE f.ordinal = 1
@@ -329,11 +329,11 @@ FROM final_cohort co
 ) UNION ALL (SELECT cohort_definition_id, subject_id, cohort_start_date, cohort_end_date FROM @target_database_schema.@target_cohort_table ))
 INSERT OVERWRITE TABLE @target_database_schema.@target_cohort_table  (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date) SELECT * FROM insertion_temp;
 
-/* Referenced Tables: ['bxi1x9apstrategy_ends'] */
-TRUNCATE TABLE bxi1x9apstrategy_ends;
+/* Referenced Tables: ['strategy_ends'] */
+TRUNCATE TABLE strategy_ends;
 
-/* Referenced Tables: ['bxi1x9apstrategy_ends'] */
-DROP TABLE bxi1x9apstrategy_ends;
+/* Referenced Tables: ['strategy_ends'] */
+DROP TABLE strategy_ends;
 
 /* Referenced Tables: ['cohort_rows'] */
 TRUNCATE TABLE cohort_rows;

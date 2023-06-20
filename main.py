@@ -14,8 +14,13 @@ def process_sql(input_file_name, statements_to_replace=None):
         "inclusion_events",
         "included_events",
         "final_cohort",
-        "cohort_rows"
+        "cohort_rows",
+        "strategy_ends"
     ]
+
+    max_rules = 11
+    for i in range(max_rules):
+        internal_table_names += ["Inclusion_" + str(i)]
 
     with open(input_file_name) as f:
 
