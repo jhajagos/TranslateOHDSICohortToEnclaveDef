@@ -1,13 +1,13 @@
 /*  Translated SQL for Enclave */
 
-/* Referenced Tables: ['Codesets'] */
+/* Referenced Tables: ['codesets'] */
 CREATE TABLE codesets
  AS
 SELECT
 cast(NULL AS int) AS codeset_id,
 	cast(NULL AS bigint) AS concept_id  WHERE 1 = 0;
 
-/* Referenced Tables: ['CONCEPT', 'CONCEPT_ANCESTOR', 'Codesets'] */
+/* Referenced Tables: ['concept', 'concept_ancestor', 'codesets'] */
 WITH insertion_temp AS (
 (SELECT 0 AS codeset_id, c.concept_id FROM (SELECT DISTINCT i.concept_id FROM
 (
@@ -31,13 +31,13 @@ UNION SELECT c.concept_id
 ) c UNION ALL
 SELECT 6 AS codeset_id, c.concept_id FROM (SELECT DISTINCT i.concept_id FROM
 (
- SELECT concept_id FROM @vocabulary_database_schema.concept WHERE concept_id IN (36661370,706167,706157,706155,36661371,715272,757678,706161,586524,586525,36661378,36032258,586520,706175,706156,706154,723469,706168,723478,36031506,723464,723471,723470,36031652,706160,36032174,706173,36031453,586528,586529,715262,723476,586526,757677,36031238,706163,36661377,715260,715261,723463,706170,706158,36032061,706169,723467,723468,723465,36031213,586519,723466,36031944,586517)
+ SELECT concept_id FROM concept WHERE concept_id IN (36661370,706167,706157,706155,36661371,715272,757678,706161,586524,586525,36661378,36032258,586520,706175,706156,706154,723469,706168,723478,36031506,723464,723471,723470,36031652,706160,36032174,706173,36031453,586528,586529,715262,723476,586526,757677,36031238,706163,36661377,715260,715261,723463,706170,706158,36032061,706169,723467,723468,723465,36031213,586519,723466,36031944,586517)
 ) i
 ) c
 ) UNION ALL (SELECT codeset_id, concept_id FROM codesets ))
-INSERT OVERWRITE TABLE codesets  (codeset_id, concept_id) SELECT * FROM insertion_temp;
+SELECT * FROM insertion_temp;
 
-/* Referenced Tables: ['qualified_events', 'MEASUREMENT', 'Codesets', 'OBSERVATION_PERIOD', 'CONDITION_OCCURRENCE', 'VISIT_OCCURRENCE', 'observation_period'] */
+/* Referenced Tables: ['qualified_events', 'measurement', 'codesets', 'observation_period', 'condition_occurrence', 'visit_occurrence', 'observation_period'] */
 CREATE TABLE qualified_events
 AS
 SELECT
@@ -245,8 +245,8 @@ FROM
 WHERE results.ordinal = 1
 ;
 
-/* Referenced Tables: ['strategy_ends', 'included_events'] */
-CREATE TABLE strategy_ends
+/* Referenced Tables: ['bxi1x9apstrategy_ends', 'included_events'] */
+CREATE TABLE bxi1x9apstrategy_ends
 AS
 SELECT
 event_id, person_id,
@@ -254,7 +254,7 @@ event_id, person_id,
 FROM
 included_events;
 
-/* Referenced Tables: ['cohort_rows', 'included_events', 'strategy_ends'] */
+/* Referenced Tables: ['cohort_rows', 'included_events', 'bxi1x9apstrategy_ends'] */
 CREATE TABLE cohort_rows
 AS
 SELECT
@@ -268,7 +268,7 @@ FROM
  JOIN ( -- cohort_ends
 -- cohort exit dates
 -- end date strategy
-SELECT event_id, person_id, end_date FROM strategy_ends
+SELECT event_id, person_id, end_date FROM bxi1x9apstrategy_ends
  ) ce ON i.event_id = ce.event_id AND i.person_id = ce.person_id AND ce.end_date >= i.start_date
  ) f
  WHERE f.ordinal = 1
@@ -329,11 +329,11 @@ FROM final_cohort co
 ) UNION ALL (SELECT cohort_definition_id, subject_id, cohort_start_date, cohort_end_date FROM @target_database_schema.@target_cohort_table ))
 INSERT OVERWRITE TABLE @target_database_schema.@target_cohort_table  (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date) SELECT * FROM insertion_temp;
 
-/* Referenced Tables: ['strategy_ends'] */
-TRUNCATE TABLE strategy_ends;
+/* Referenced Tables: ['bxi1x9apstrategy_ends'] */
+TRUNCATE TABLE bxi1x9apstrategy_ends;
 
-/* Referenced Tables: ['strategy_ends'] */
-DROP TABLE strategy_ends;
+/* Referenced Tables: ['bxi1x9apstrategy_ends'] */
+DROP TABLE bxi1x9apstrategy_ends;
 
 /* Referenced Tables: ['cohort_rows'] */
 TRUNCATE TABLE cohort_rows;
@@ -365,9 +365,9 @@ TRUNCATE TABLE included_events;
 /* Referenced Tables: ['included_events'] */
 DROP TABLE included_events;
 
-/* Referenced Tables: ['Codesets'] */
+/* Referenced Tables: ['codesets'] */
 TRUNCATE TABLE codesets;
 
-/* Referenced Tables: ['Codesets'] */
+/* Referenced Tables: ['codesets'] */
 DROP TABLE codesets;
 
